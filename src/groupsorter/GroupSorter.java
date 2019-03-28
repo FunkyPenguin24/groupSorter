@@ -346,6 +346,7 @@ public class GroupSorter {
         Student s = new Student(name, role, attendance);
         addStudentToList(name, role, attendance);
         cl.addStudent(s);
+        cl.sortStudentsByAttendance();
     }
 
     void setNumOfStudentsPerGroup(int n) {
