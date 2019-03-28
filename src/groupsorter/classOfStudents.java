@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author niall
  */
 public class classOfStudents {
-
+    
     private int numOfGroups;
     private int studentsPerGroup;
     private String lecturerName;
@@ -162,10 +162,29 @@ public class classOfStudents {
             System.out.println("Group " + group.getGroupName());
             for (int j = 0; j < group.getStudentListSize(); j++) {
                 Student s = group.getStudentList().get(j);
-                System.out.println(s.getName() + ": " + s.getPrefRole());
+                System.out.println(s.getName() + ": " + s.getPrefRole() + ", " + s.getAttendance());
             }
             System.out.println();
         }
+    }
+    
+    void sortStudentsByAttendance() {
+        boolean swap; //creates the swap variable
+        do {
+            swap = false; //sets the swap variable to false at the start of each loop
+            for (int i = 0; i < studentList.size(); i++) { //loops through the list of students
+                if (i != studentList.size() - 1) { //if the selected student isn't at the end of the list (no one to switch with)
+                    if (studentList.get(i).getAttendance() < studentList.get(i + 1).getAttendance()) { //if the next student in the list has a lower attendance than the current student
+                        Student tempStudent = studentList.get(i + 1); //switch the students and set the swap variable to true, looping the program again
+                        studentList.set(i + 1, studentList.get(i)); //this makes sure all the students with higher attendances are at the top of the list
+                        studentList.set(i, tempStudent);
+                        swap = true;
+                    }
+                }
+            }
+        } while (swap); //loops until there are no swaps in a loop
+        for (int i = 0; i < studentList.size(); i++)
+            System.out.println(studentList.get(i).getAttendance());
     }
     
 }

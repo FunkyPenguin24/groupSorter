@@ -339,6 +339,7 @@ public class GroupSorter {
             System.out.println("Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
             createStudent(studentName, studentRole, studentAtt);
         }
+        cl.sortStudentsByAttendance();
     }
 
     void createStudent(String name, String role, double attendance) {
