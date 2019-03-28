@@ -339,12 +339,14 @@ public class GroupSorter {
             System.out.println("Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
             createStudent(studentName, studentRole, studentAtt);
         }
+        cl.sortStudentsByAttendance();
     }
 
     void createStudent(String name, String role, double attendance) {
         Student s = new Student(name, role, attendance);
         addStudentToList(name, role, attendance);
         cl.addStudent(s);
+        cl.sortStudentsByAttendance();
     }
 
     void setNumOfStudentsPerGroup(int n) {
