@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import java.sql.*;
 
 /**
  *
@@ -246,7 +247,6 @@ public class GroupSorter {
     }
 
     // </editor-fold>
-    
     void addStudentPopup() {
         JTextField studentName = new JTextField(5);
         JTextField studentRole = new JTextField(5);
@@ -290,11 +290,29 @@ public class GroupSorter {
         int value = fileChooser.showOpenDialog(groupNumberList);
         if (value == JFileChooser.APPROVE_OPTION) {
             File chosenFile = fileChooser.getSelectedFile();
-            readStudentData(chosenFile);
+            String fileName = chosenFile.getName();
+            if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
+                readStudentsFromCSV(chosenFile);
+            } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a database file
+                try {
+                    readStudentsFromDB(chosenFile);
+                } catch (SQLException ex) {
+                    Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
-    void readStudentData(File fileToBeRead) {
+    private void readStudentsFromDB(File fileToBeRead) throws SQLException {
+        DataReader dr = new DataReader(fileToBeRead.getPath());
+        ArrayList<Student> readStudents = dr.loadStudents();
+        for (int i = 0; i < readStudents.size(); i++)
+            createStudent(readStudents.get(i));
+        cl.sortStudentsByAttendance();
+        System.out.println("Students loaded");
+    }
+
+    void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileToBeRead));
             ArrayList<String> studentInfo = new ArrayList<>();
@@ -346,6 +364,12 @@ public class GroupSorter {
         Student s = new Student(name, role, attendance);
         addStudentToList(name, role, attendance);
         cl.addStudent(s);
+        cl.sortStudentsByAttendance();
+    }
+    
+    private void createStudent(Student student) {
+        addStudentToList(student.getName(), student.getPrefRole(), student.getAttendance());
+        cl.addStudent(student);
         cl.sortStudentsByAttendance();
     }
 
