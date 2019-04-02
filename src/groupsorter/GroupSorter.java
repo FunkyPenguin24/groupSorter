@@ -436,25 +436,27 @@ public class GroupSorter {
     }
 
     private void analyseData(ArrayList<String> studentInfo) {
-        int id = 0;
+        int studentID = 0;
         String studentName = "";
         String studentRole = "";
         double studentAtt = 0;
         for (int i = 0; i < studentInfo.size(); i++) {
             int value = 0;
             int valueStart = 0;
-            //System.out.println(studentInfo.get(i));
             String studentInfoLine = studentInfo.get(i);
             for (int j = 0; j < studentInfoLine.length(); j++) {
                 if (",".equals(studentInfoLine.substring(j, j + 1))) {
                     switch (value) {
                         case 0:
-                            studentName = studentInfoLine.substring(valueStart, j);
+                            studentID = Integer.parseInt(studentInfoLine.substring(valueStart, j));
                             break;
                         case 1:
-                            studentRole = studentInfoLine.substring(valueStart, j);
+                            studentName = studentInfoLine.substring(valueStart, j);
                             break;
                         case 2:
+                            studentRole = studentInfoLine.substring(valueStart, j);
+                            break;
+                        case 3:
                             studentAtt = Double.parseDouble(studentInfoLine.substring(valueStart, j));
                             break;
                     }
@@ -462,9 +464,8 @@ public class GroupSorter {
                     value += 1;
                 }
             }
-            System.out.println("Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
-            createStudent(id, studentName, studentRole, studentAtt);
-            id++;
+            System.out.println("ID: " + studentID + ", Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
+            createStudent(studentID, studentName, studentRole, studentAtt);
         }
         cl.sortStudentsByAttendance();
     }
