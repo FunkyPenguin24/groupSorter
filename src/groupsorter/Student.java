@@ -15,6 +15,7 @@ public class Student {
     private String preferredRole;
     private double attendance;
     private boolean inGroup;
+    private int groupID;
     public Student(int id, String n, String role, double att) {
         studentID = id;
         name = n;

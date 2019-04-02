@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Group {
     private Student leader;
     private String groupName;
+    private int groupID;
     private ArrayList<Student> studentList;
     public Group(String n) {
         groupName = n;
