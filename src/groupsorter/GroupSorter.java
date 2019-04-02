@@ -94,7 +94,11 @@ public class GroupSorter {
 
         programWindow.setVisible(true);
     }
-
+    
+    void initSaveButton(window programWindow) {
+        //create save button here
+    }
+    
     void initLabels(window programWindow) {
         JLabel studentLabel = new JLabel("Students in class");
         studentLabel.setVisible(true);
@@ -268,7 +272,7 @@ public class GroupSorter {
             System.out.println("name: " + studentName.getText());
             System.out.println("role: " + studentRole.getText());
             System.out.println("attendance: " + studentAtt.getText());
-            createStudent(studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
+            createStudent(cl.getStudentListSize(), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
             addStudentToList(studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
         }
     }
@@ -329,6 +333,7 @@ public class GroupSorter {
     }
 
     void analyseData(ArrayList<String> studentInfo) {
+        int id = 0;
         String studentName = "";
         String studentRole = "";
         double studentAtt = 0;
@@ -355,13 +360,14 @@ public class GroupSorter {
                 }
             }
             System.out.println("Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
-            createStudent(studentName, studentRole, studentAtt);
+            createStudent(id, studentName, studentRole, studentAtt);
+            id++;
         }
         cl.sortStudentsByAttendance();
     }
 
-    void createStudent(String name, String role, double attendance) {
-        Student s = new Student(name, role, attendance);
+    void createStudent(int id, String name, String role, double attendance) {
+        Student s = new Student(id, name, role, attendance);
         addStudentToList(name, role, attendance);
         cl.addStudent(s);
         cl.sortStudentsByAttendance();

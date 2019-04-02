@@ -54,7 +54,7 @@ public class classOfStudents {
         lecturerName = n;
     }
 
-    double getStudentListSize() {
+    int getStudentListSize() {
         return studentList.size();
     }
     
