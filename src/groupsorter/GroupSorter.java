@@ -331,8 +331,7 @@ public class GroupSorter {
             System.out.println("name: " + studentName.getText());
             System.out.println("role: " + studentRole.getText());
             System.out.println("attendance: " + studentAtt.getText());
-            createStudent(cl.getStudentListSize(), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
-            addStudentToList(Integer.parseInt(studentIDField.getText()), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
+            createStudent(Integer.parseInt(studentIDField.getText()), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
         }
     }
 
