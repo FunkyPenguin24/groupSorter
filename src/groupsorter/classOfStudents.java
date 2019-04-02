@@ -49,11 +49,11 @@ public class classOfStudents {
         numOfGroups = n;
         createGroups(n);
     }
-
+        
     String getLecturerName() {
         return lecturerName;
     }
-
+    
     void setLecturerName(String n) {
         lecturerName = n;
     }
@@ -120,7 +120,6 @@ public class classOfStudents {
             noGroupNeeds = false;
             for (int j = 0; j < numOfGroups; j++) { //loop through each group
                 if (canStudentGoToGroup(studentList.get(i), groupList.get(j), maxGroupSize, noGroupNeeds)) {
-                    System.out.println(studentList.get(i).getName() + " has joined a group");
                     addStudentToGroup(studentList.get(i), groupList.get(j));
                 } else {
                     System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupName());
@@ -155,21 +154,31 @@ public class classOfStudents {
                 studentsWithoutGroups++;
         String[] studentNames = new String[studentsWithoutGroups];
         int j = 0;
-        for (int i = 0; i < getStudentList().size(); i++)
-            if (!getStudentList().get(i).isInGroup()){
-                studentNames[j] = getStudentList().get(i).getName() + ", " + getStudentList().get(i).getPrefRole() + ", " + getStudentList().get(i).getAttendance();
+        for (int i = 0; i < getStudentList().size(); i++) {
+            Student s = getStudentList().get(i);
+            if (!s.isInGroup()){
+                studentNames[j] = s.getStudentID() + ", " + s.getName() + ", " + s.getPrefRole() + ", " + s.getAttendance();
                 j++;
             }
+        }
         return studentNames;
     }
-        
+    
+    Student getStudentByID(int id) {
+        for (int i = 0; i < studentList.size(); i++) {
+            if (studentList.get(i).getStudentID() == id)
+                return studentList.get(i);
+        }
+        return null;
+    }
+    
     void printGroupInfo() {
         for (int i = 0; i < getGroupListSize(); i++) {
             Group group = getGroupList().get(i);
             System.out.println("Group " + group.getGroupName());
             for (int j = 0; j < group.getStudentListSize(); j++) {
                 Student s = group.getStudentList().get(j);
-                System.out.println(s.getName() + ": " + s.getPrefRole() + ", " + s.getAttendance());
+                System.out.println(s.getStudentID() + " " + s.getName() + ": " + s.getPrefRole() + ", " + s.getAttendance());
             }
             System.out.println();
         }

@@ -75,14 +75,22 @@ public class GroupSorter {
         JButton addStudentBatch = new JButton("Add students (external file)");
         programWindow.add(addStudentBatch);
         initAddStudentBatch(addStudentBatch);
-        
+
         JButton addStudentDB = new JButton("Add students (internal database)");
         programWindow.add(addStudentDB);
         initAddStudentDB(addStudentDB);
-        
+
+        JButton saveStudentsDB = new JButton("Save students (internal database");
+        programWindow.add(saveStudentsDB);
+        initSaveButtonDB(saveStudentsDB);
+
         JButton sortButton = new JButton("Sort");
         programWindow.add(sortButton);
         initSortButton(sortButton);
+
+        JButton editStudentButton = new JButton("Edit student");
+        programWindow.add(editStudentButton);
+        initEditStudentButton(editStudentButton, studentList);
 
         groupNumSpinner = new JSpinner();
         programWindow.add(groupNumSpinner);
@@ -98,11 +106,20 @@ public class GroupSorter {
 
         programWindow.setVisible(true);
     }
-    
-    void initSaveButton(window programWindow) {
+
+    void initSaveButtonDB(JButton button) {
         //create save button here
+        button.setVisible(true);
+        button.setEnabled(true);
+        button.setBounds(420, listHeight + 370, 150, 35);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveStudentsToDB(cl.getStudentList());
+            }
+        });
     }
-    
+
     void initLabels(window programWindow) {
         JLabel studentLabel = new JLabel("Students in class");
         studentLabel.setVisible(true);
@@ -145,7 +162,23 @@ public class GroupSorter {
         });
     }
 
-    void initNameList(JList list) {
+    private void initEditStudentButton(JButton button, JList studentList) {
+        button.setVisible(true);
+        button.setEnabled(true);
+        button.setBounds(250, listHeight + 115, 150, 35);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (studentList.getSelectedIndex() != -1) {
+                    String studentID = studentList.getSelectedValue().toString().substring(0, 8);
+                    Student selectedStudent = cl.getStudentByID(Integer.parseInt(studentID));
+                    editStudentPopup(selectedStudent);
+                }
+            }
+        });
+    }
+
+    private void initNameList(JList list) {
         list.setListData(cl.getNamesForList());
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         list.setVisible(true);
@@ -153,17 +186,17 @@ public class GroupSorter {
         list.setBounds(30, listHeight, 200, 350);
     }
 
-    void addStudentToList(String name, String role, double attendance) {
+    private void addStudentToList(int id, String name, String role, double attendance) {
         JList list = studentList;
         String[] nameList = new String[list.getModel().getSize() + 1];
         for (int i = 0; i < list.getModel().getSize(); i++) {
             nameList[i] = (String) list.getModel().getElementAt(i);
         }
-        nameList[list.getModel().getSize()] = name + ", " + role + ", " + attendance;
+        nameList[list.getModel().getSize()] = id + ", " + name + ", " + role + ", " + attendance;
         list.setListData(nameList);
     }
 
-    void initAddStudentManual(JButton button) {
+    private void initAddStudentManual(JButton button) {
         button.setVisible(true);
         button.setEnabled(true);
         button.setBounds(30, listHeight + 370, 200, 35);
@@ -175,7 +208,7 @@ public class GroupSorter {
         });
     }
 
-    void initAddStudentBatch(JButton button) {
+    private void initAddStudentBatch(JButton button) {
         button.setVisible(true);
         button.setEnabled(true);
         button.setBounds(30, listHeight + 425, 200, 35);
@@ -186,34 +219,34 @@ public class GroupSorter {
             }
         });
     }
-    
-    void initAddStudentDB(JButton button) {
+
+    private void initAddStudentDB(JButton button) {
         button.setVisible(true);
         button.setEnabled(true);
         button.setBounds(30, listHeight + 480, 200, 35);
-        button.addActionListener(new  ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e){
-               loadStudentsFromDB();
-           }
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadStudentsFromDB();
+            }
         });
     }
-    
-    void initGroupNumberList(JList list) {
+
+    private void initGroupNumberList(JList list) {
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         list.setVisible(true);
         list.setEnabled(true);
         list.setBounds(420, listHeight, 15, 350);
     }
 
-    void initGroupMemberList(JList list) {
+    private void initGroupMemberList(JList list) {
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         list.setVisible(true);
         list.setEnabled(true);
         list.setBounds(435, listHeight, 100, 350);
     }
 
-    void fillGroupNumberList(JList list) {
+    private void fillGroupNumberList(JList list) {
         int numOfStudents = cl.getStudentList().size();
         int numOfRows = numOfStudents + (cl.getNumOfGroups());
         int groupNum = 0;
@@ -240,12 +273,9 @@ public class GroupSorter {
         list.setListData(listData);
     }
 
-    void fillGroupMemberList(JList list) {
+    private void fillGroupMemberList(JList list) {
         int numOfStudents = cl.getStudentList().size();
         int numOfRows = numOfStudents + (cl.getNumOfGroups());
-//        System.out.println("NUMBER OF ROWS " + numOfRows);
-//        System.out.println("NUMBER OF STUDENTS " + numOfStudents);
-//        System.out.println("NUMBER OF GROUPS " + cl.getNumOfGroups());
         int groupNum = 0;
         int rowNum = 0;
         boolean done = false;
@@ -267,7 +297,6 @@ public class GroupSorter {
     }
 
     // </editor-fold>
-    
     private void loadStudentsFromDB() {
         File databaseFile = new File("src\\db\\classDatabase.db");
         try {
@@ -276,13 +305,17 @@ public class GroupSorter {
             Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    void addStudentPopup() {
+
+    private void addStudentPopup() {
+        JTextField studentIDField = new JTextField(5);
         JTextField studentName = new JTextField(5);
         JTextField studentRole = new JTextField(5);
         JTextField studentAtt = new JTextField(5);
 
         JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("ID:"));
+        myPanel.add(studentIDField);
+        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
         myPanel.add(new JLabel("Name:"));
         myPanel.add(studentName);
         myPanel.add(Box.createHorizontalStrut(15)); // a spacer
@@ -299,23 +332,58 @@ public class GroupSorter {
             System.out.println("role: " + studentRole.getText());
             System.out.println("attendance: " + studentAtt.getText());
             createStudent(cl.getStudentListSize(), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
-            addStudentToList(studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
+            addStudentToList(Integer.parseInt(studentIDField.getText()), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
         }
     }
 
-    void createClass() {
+    private void editStudentPopup(Student s) {
+        JTextField studentIDField = new JTextField(5);
+        studentIDField.setText(s.getStudentID() + "");
+        JTextField studentName = new JTextField(5);
+        studentName.setText(s.getName());
+        JTextField studentRole = new JTextField(5);
+        studentRole.setText(s.getPrefRole());
+        JTextField studentAtt = new JTextField(5);
+        studentAtt.setText(s.getAttendance() + "");
+
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("ID:"));
+        myPanel.add(studentIDField);
+        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(new JLabel("Name:"));
+        myPanel.add(studentName);
+        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(new JLabel("Role:"));
+        myPanel.add(studentRole);
+        myPanel.add(Box.createHorizontalStrut(15));
+        myPanel.add(new JLabel("Attendance:"));
+        myPanel.add(studentAtt);
+
+        int result = JOptionPane.showConfirmDialog(null, myPanel,
+                "Please enter the student's details", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            System.out.println("name: " + studentName.getText());
+            System.out.println("role: " + studentRole.getText());
+            System.out.println("attendance: " + studentAtt.getText());
+            updateStudent(s, studentIDField.getText(), studentName.getText(), studentRole.getText(), studentAtt.getText());
+            //createStudent(cl.getStudentListSize(), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
+            //addStudentToList(Integer.parseInt(studentIDField.getText()), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
+        }
+    }
+    
+    private void updateStudent(Student s, String id, String name, String role, String attendance) {
+        s.setStudentID(Integer.parseInt(id));
+        s.setName(name);
+        s.setPrefRole(role);
+        s.setAttendance(Double.parseDouble(attendance));
+        initNameList(studentList);
+    }
+    
+    private void createClass() {
         cl = new classOfStudents("Nemitari");
-//        createStudent("Niall", "Programming", 89.24);
-//        createStudent("Jordan", "Programming", 69.21);
-//        createStudent("Nick", "Documentation", 95.00);
-//        createStudent("Liam", "Programming", 75.15);
-//        createStudent("Jacob", "Documentation", 71.00);
-//        createStudent("Lee", "Programming", 10.02);
-//        createStudent("Steven", "Documentation", 72.15);
-//        createStudent("Kevin", "Documentation", 47.54);
     }
 
-    void selectDataFilePopup() {
+    private void selectDataFilePopup() {
         JFileChooser fileChooser = new JFileChooser();
         int value = fileChooser.showOpenDialog(groupNumberList);
         if (value == JFileChooser.APPROVE_OPTION) {
@@ -336,13 +404,14 @@ public class GroupSorter {
     private void readStudentsFromDB(File fileToBeRead) throws SQLException {
         DataReader dr = new DataReader(fileToBeRead.getPath());
         ArrayList<Student> readStudents = dr.loadStudents();
-        for (int i = 0; i < readStudents.size(); i++)
+        for (int i = 0; i < readStudents.size(); i++) {
             createStudent(readStudents.get(i));
+        }
         cl.sortStudentsByAttendance();
         System.out.println("Students loaded");
     }
 
-    void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
+    private void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileToBeRead));
             ArrayList<String> studentInfo = new ArrayList<>();
@@ -358,7 +427,11 @@ public class GroupSorter {
         }
     }
 
-    void analyseData(ArrayList<String> studentInfo) {
+    private void saveStudentsToDB(ArrayList<Student> studentList) {
+
+    }
+
+    private void analyseData(ArrayList<String> studentInfo) {
         int id = 0;
         String studentName = "";
         String studentRole = "";
@@ -392,24 +465,24 @@ public class GroupSorter {
         cl.sortStudentsByAttendance();
     }
 
-    void createStudent(int id, String name, String role, double attendance) {
+    private void createStudent(int id, String name, String role, double attendance) {
         Student s = new Student(id, name, role, attendance);
-        addStudentToList(name, role, attendance);
+        addStudentToList(id, name, role, attendance);
         cl.addStudent(s);
         cl.sortStudentsByAttendance();
     }
-    
+
     private void createStudent(Student student) {
-        addStudentToList(student.getName(), student.getPrefRole(), student.getAttendance());
+        addStudentToList(student.getStudentID(), student.getName(), student.getPrefRole(), student.getAttendance());
         cl.addStudent(student);
         cl.sortStudentsByAttendance();
     }
 
-    void setNumOfStudentsPerGroup(int n) {
+    private void setNumOfStudentsPerGroup(int n) {
         cl.setStudentsPerGroup(n);
     }
 
-    void sortStudents() {
+    private void sortStudents() {
         cl.sortStudentsIntoGroups();
         cl.printGroupInfo();
     }
