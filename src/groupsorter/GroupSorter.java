@@ -6,6 +6,7 @@
 package groupsorter;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import java.sql.*;
+import javax.swing.JComponent;
 
 /**
  *
@@ -66,52 +68,63 @@ public class GroupSorter {
 
         studentList = new JList(); //creates and initialises a list that contains all the students in the class
         programWindow.add(studentList);
+        initComponent(studentList, new Rectangle(30, listHeight, 200, 350));
         initNameList(studentList);
 
-        JButton addStudentManual = new JButton("Add student");
+        JButton addStudentManual = new JButton("Add student"); //creates and sets up the button to manually add a student
         programWindow.add(addStudentManual);
+        initComponent(addStudentManual, new Rectangle(30, listHeight + 370, 200, 35));
         initAddStudentManual(addStudentManual);
 
-        JButton addStudentBatch = new JButton("Add students (external file)");
+        JButton addStudentBatch = new JButton("Import students (Database/text file)"); //creates and sets up the button to add students via a csv
         programWindow.add(addStudentBatch);
+        initComponent(addStudentBatch, new Rectangle(30, listHeight + 425, 200, 35));
         initAddStudentBatch(addStudentBatch);
 
-        JButton addStudentDB = new JButton("Add students (internal database)");
+        JButton addStudentDB = new JButton("Load saved students"); //creates and sets up the button to add students via a database
         programWindow.add(addStudentDB);
+        initComponent(addStudentDB, new Rectangle(30, listHeight + 480, 200, 35));
         initAddStudentDB(addStudentDB);
 
-        JButton saveStudentsDB = new JButton("Save students (internal database");
+        JButton saveStudentsDB = new JButton("Export students (database)"); //creates and sets up the button to save students in the internal database
         programWindow.add(saveStudentsDB);
+        initComponent(saveStudentsDB, new Rectangle(420, listHeight + 370, 150, 35));
         initSaveButtonDB(saveStudentsDB);
 
-        JButton sortButton = new JButton("Sort");
+        JButton sortButton = new JButton("Sort"); //creates and sets up the button to sort students
         programWindow.add(sortButton);
+        initComponent(sortButton, new Rectangle(250, listHeight + 60, 150, 35));
         initSortButton(sortButton);
 
-        JButton editStudentButton = new JButton("Edit student");
+        JButton editStudentButton = new JButton("Edit student"); //creates and sets up the button to edit a selected student
         programWindow.add(editStudentButton);
+        initComponent(editStudentButton, new Rectangle(250, listHeight + 115, 150, 35));
         initEditStudentButton(editStudentButton, studentList);
 
         groupNumSpinner = new JSpinner();
         programWindow.add(groupNumSpinner);
-        initGroupNumSpinner(groupNumSpinner);
+        initComponent(groupNumSpinner, new Rectangle(305, listHeight, 40, 40));
 
         groupNumberList = new JList();
         programWindow.add(groupNumberList);
+        initComponent(groupNumberList, new Rectangle(420, listHeight, 15, 350));
         initGroupNumberList(groupNumberList);
 
         groupMemberList = new JList();
         programWindow.add(groupMemberList);
+        initComponent(groupMemberList, new Rectangle(435, listHeight, 100, 350));
         initGroupMemberList(groupMemberList);
 
         programWindow.setVisible(true);
     }
-
-    void initSaveButtonDB(JButton button) {
-        //create save button here
+    
+    private void initComponent(JComponent button, Rectangle bounds) {
         button.setVisible(true);
         button.setEnabled(true);
-        button.setBounds(420, listHeight + 370, 150, 35);
+        button.setBounds(bounds);
+    }
+    
+    void initSaveButtonDB(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,16 +154,7 @@ public class GroupSorter {
 
     }
 
-    void initGroupNumSpinner(JSpinner spinner) {
-        spinner.setVisible(true);
-        spinner.setEnabled(true);
-        spinner.setBounds(305, listHeight, 40, 40);
-    }
-
     void initSortButton(JButton sortButton) {
-        sortButton.setVisible(true);
-        sortButton.setEnabled(true);
-        sortButton.setBounds(250, listHeight + 60, 150, 35);
         sortButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,9 +167,6 @@ public class GroupSorter {
     }
 
     private void initEditStudentButton(JButton button, JList studentList) {
-        button.setVisible(true);
-        button.setEnabled(true);
-        button.setBounds(250, listHeight + 115, 150, 35);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -181,9 +182,6 @@ public class GroupSorter {
     private void initNameList(JList list) {
         list.setListData(cl.getNamesForList());
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        list.setVisible(true);
-        list.setEnabled(true);
-        list.setBounds(30, listHeight, 200, 350);
     }
 
     private void addStudentToList(int id, String name, String role, double attendance) {
@@ -197,9 +195,6 @@ public class GroupSorter {
     }
 
     private void initAddStudentManual(JButton button) {
-        button.setVisible(true);
-        button.setEnabled(true);
-        button.setBounds(30, listHeight + 370, 200, 35);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -209,9 +204,6 @@ public class GroupSorter {
     }
 
     private void initAddStudentBatch(JButton button) {
-        button.setVisible(true);
-        button.setEnabled(true);
-        button.setBounds(30, listHeight + 425, 200, 35);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,9 +213,6 @@ public class GroupSorter {
     }
 
     private void initAddStudentDB(JButton button) {
-        button.setVisible(true);
-        button.setEnabled(true);
-        button.setBounds(30, listHeight + 480, 200, 35);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -234,16 +223,10 @@ public class GroupSorter {
 
     private void initGroupNumberList(JList list) {
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        list.setVisible(true);
-        list.setEnabled(true);
-        list.setBounds(420, listHeight, 15, 350);
     }
 
     private void initGroupMemberList(JList list) {
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        list.setVisible(true);
-        list.setEnabled(true);
-        list.setBounds(435, listHeight, 100, 350);
     }
 
     private void fillGroupNumberList(JList list) {
@@ -434,7 +417,16 @@ public class GroupSorter {
             Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    private void saveStudentsToDB(ArrayList<Student> studentList, String dbPath) {
+        DataWriter dw = new DataWriter(dbPath);
+        try {
+            dw.saveStudents(studentList);
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void analyseData(ArrayList<String> studentInfo) {
         int studentID = 0;
         String studentName = "";
