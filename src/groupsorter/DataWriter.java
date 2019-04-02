@@ -33,15 +33,15 @@ public class DataWriter {
             studentID = currentStudent.getStudentID();
             if (!studentExists(studentID, conn)) {
                 setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance) VALUES ('"
-                        + studentID + "', "
-                        + studentName + "', "
-                        + prefRole + "', "
+                        + studentID + "', '"
+                        + studentName + "', '"
+                        + prefRole + "', '"
                         + attendance + "')";
             } else {
                 setStatement = "UPDATE Students SET "
                         + "studentName = '" + studentName + "', "
                         + "prefRole = '" + prefRole + "', "
-                        + "attendance = '" + attendance + "' WHERE"
+                        + "attendance = '" + attendance + "' WHERE "
                         + "studentID = '" + studentID + "';";
             }
             Statement stm = conn.createStatement();
