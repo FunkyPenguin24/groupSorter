@@ -428,7 +428,12 @@ public class GroupSorter {
     }
 
     private void saveStudentsToDB(ArrayList<Student> studentList) {
-
+        DataWriter dw = new DataWriter("src\\db\\classDatabase.db");
+        try {
+            dw.saveStudents(studentList);
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void analyseData(ArrayList<String> studentInfo) {
