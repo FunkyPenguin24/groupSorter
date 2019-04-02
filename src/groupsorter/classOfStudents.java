@@ -30,8 +30,11 @@ public class classOfStudents {
     }
 
     public void setStudentsPerGroup(int sPg) {
-        studentsPerGroup = sPg;
-        setNumOfGroups((int) Math.ceil(getStudentListSize()/sPg));
+        double numberOfStudents = getStudentListSize();
+        double studentsPerGroup = sPg;
+        this.studentsPerGroup = sPg;
+        double numOfGroups = (numberOfStudents/studentsPerGroup);
+        setNumOfGroups((int) Math.ceil(numOfGroups));
         System.out.println("STUDENTS PER GROUP " + studentsPerGroup);
         System.out.println("TOTAL STUDENT NUMBER " + getStudentListSize());
         System.out.println("NUMBER OF GROUPS NEEDED " + getNumOfGroups());
@@ -42,6 +45,7 @@ public class classOfStudents {
     }
 
     void setNumOfGroups(int n) {
+        //System.out.println("num of groups: " + n);
         numOfGroups = n;
         createGroups(n);
     }
@@ -109,14 +113,17 @@ public class classOfStudents {
         boolean noGroupNeeds; //if no group needs what role the student has
         double studentNum = getStudentListSize();
         double maxGroupSize = getStudentsPerGroup();
+        System.out.println("max group size: " + maxGroupSize);
+        System.out.println("number of students: " + studentNum);
         System.out.println("AVERAGE NUMBER OF STUDENTS PER GROUP IS " + maxGroupSize);
         for (int i = 0; i < studentNum; i++) { //loop through each student
             noGroupNeeds = false;
             for (int j = 0; j < numOfGroups; j++) { //loop through each group
                 if (canStudentGoToGroup(studentList.get(i), groupList.get(j), maxGroupSize, noGroupNeeds)) {
+                    System.out.println(studentList.get(i).getName() + " has joined a group");
                     addStudentToGroup(studentList.get(i), groupList.get(j));
                 } else {
-                    //System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupName());
+                    System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupName());
                 }
                 if (j == numOfGroups - 1 && !studentList.get(i).isInGroup()) {
                     noGroupNeeds = true;
@@ -127,8 +134,8 @@ public class classOfStudents {
     }
         
     boolean canStudentGoToGroup(Student s, Group g, double maxGroupSize, boolean noGroupNeeds) {
-        if (noGroupNeeds)
-            return (!s.isInGroup() && g.getStudentListSize() < maxGroupSize);
+        if (noGroupNeeds) //if no group needs the student
+            return (!s.isInGroup() && g.getStudentListSize() < maxGroupSize); //returns true is the student is not in a group and the number of students in the group isn't the max number
         else
             return (g.needsStudent(s) && !s.isInGroup() && g.getStudentListSize() < maxGroupSize);            
     }

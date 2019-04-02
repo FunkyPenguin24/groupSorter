@@ -72,10 +72,14 @@ public class GroupSorter {
         programWindow.add(addStudentManual);
         initAddStudentManual(addStudentManual);
 
-        JButton addStudentBatch = new JButton("Add students from file");
+        JButton addStudentBatch = new JButton("Add students (external file)");
         programWindow.add(addStudentBatch);
         initAddStudentBatch(addStudentBatch);
-
+        
+        JButton addStudentDB = new JButton("Add students (internal database)");
+        programWindow.add(addStudentDB);
+        initAddStudentDB(addStudentDB);
+        
         JButton sortButton = new JButton("Sort");
         programWindow.add(sortButton);
         initSortButton(sortButton);
@@ -182,7 +186,19 @@ public class GroupSorter {
             }
         });
     }
-
+    
+    void initAddStudentDB(JButton button) {
+        button.setVisible(true);
+        button.setEnabled(true);
+        button.setBounds(30, listHeight + 480, 200, 35);
+        button.addActionListener(new  ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e){
+               loadStudentsFromDB();
+           }
+        });
+    }
+    
     void initGroupNumberList(JList list) {
         list.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         list.setVisible(true);
@@ -251,6 +267,16 @@ public class GroupSorter {
     }
 
     // </editor-fold>
+    
+    private void loadStudentsFromDB() {
+        File databaseFile = new File("src\\db\\classDatabase.db");
+        try {
+            readStudentsFromDB(databaseFile);
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     void addStudentPopup() {
         JTextField studentName = new JTextField(5);
         JTextField studentRole = new JTextField(5);
