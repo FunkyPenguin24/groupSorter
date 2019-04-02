@@ -30,7 +30,7 @@ public class DataWriter {
             studentName = currentStudent.getName();
             prefRole = currentStudent.getPrefRole();
             attendance = currentStudent.getAttendance();
-            studentID = currentStudent.getID();
+            studentID = currentStudent.getStudentID();
             if (!studentExists(studentID, conn)) {
                 setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance) VALUES ('"
                         + studentID + "', "

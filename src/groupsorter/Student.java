@@ -24,7 +24,11 @@ public class Student {
         inGroup = false;
     }
     
-    public int getID() {
+    public void setStudentID(int id) {
+        studentID = id;
+    }
+    
+    public int getStudentID() {
         return studentID;
     }
     
@@ -40,7 +44,7 @@ public class Student {
         return attendance;
     }
 
-    void setAttendance(float att) {
+    void setAttendance(double att) {
         this.attendance = att;
     }
     
