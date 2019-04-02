@@ -10,15 +10,21 @@ package groupsorter;
  * @author niall
  */
 public class Student {
+    private int studentID;
     private String name;
     private String preferredRole;
     private double attendance;
     private boolean inGroup;
-    public Student(String n, String role, double att) {
+    public Student(int id, String n, String role, double att) {
+        studentID = id;
         name = n;
         preferredRole = role;
         attendance = att;
         inGroup = false;
+    }
+    
+    public int getID() {
+        return studentID;
     }
     
     public boolean isInGroup() {
