@@ -21,32 +21,43 @@ public class DataWriter {
     }
 
     void saveStudents(ArrayList<Student> studentList) throws SQLException {
+        clearTable("Students");
         Connection conn = getConnection();
         String setStatement, studentName, prefRole;
         double attendance;
-        int studentID;
+        int studentID, groupID;
         for (int i = 0; i < studentList.size(); i++) {
             Student currentStudent = studentList.get(i);
             studentName = currentStudent.getName();
             prefRole = currentStudent.getPrefRole();
             attendance = currentStudent.getAttendance();
             studentID = currentStudent.getStudentID();
+            groupID = currentStudent.getGroupID();
             if (!studentExists(studentID, conn)) {
-                setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance) VALUES ('"
+                setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance, groupID) VALUES ('"
                         + studentID + "', '"
                         + studentName + "', '"
                         + prefRole + "', '"
-                        + attendance + "')";
+                        + attendance + "', '"
+                        + groupID + "')";
             } else {
                 setStatement = "UPDATE Students SET "
                         + "studentName = '" + studentName + "', "
                         + "prefRole = '" + prefRole + "', "
-                        + "attendance = '" + attendance + "' WHERE "
+                        + "attendance = '" + attendance + "', "
+                        + "groupID = '" + groupID + "' WHERE "
                         + "studentID = '" + studentID + "';";
             }
             Statement stm = conn.createStatement();
             stm.execute(setStatement);
         }
+    }
+    
+    private void clearTable(String tableName) throws SQLException {
+        Connection conn = getConnection();
+        String setStatement = "DELETE FROM " + tableName;
+        Statement stm = conn.createStatement();
+        stm.execute(setStatement);
     }
     
     private boolean studentExists(int studentID, Connection conn) throws SQLException { //the method that checks if a team exists or not

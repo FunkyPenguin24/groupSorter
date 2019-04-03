@@ -86,7 +86,7 @@ public class classOfStudents {
         numOfGroups = n;
         clearGroups();
         for (int i = 0; i < n; i++)
-            groupList.add(new Group(i + ""));
+            groupList.add(new Group(i + 1));
     }
     
     void clearGroups() {
@@ -100,12 +100,14 @@ public class classOfStudents {
         //System.out.println(s.getName() + " was added to group " + g.getGroupName());
         g.addStudent(s);
         s.setInGroup(true);
+        s.setGroupID(g.getGroupID());
     }
 
     void removeStudentFromGroup(Student s, Group g) {
         if (g.getStudentList().contains(s)) {
             g.removeStudent(s);
             s.setInGroup(false);
+            s.setGroupID(-1);
         }
     }
 
@@ -122,7 +124,7 @@ public class classOfStudents {
                 if (canStudentGoToGroup(studentList.get(i), groupList.get(j), maxGroupSize, noGroupNeeds)) {
                     addStudentToGroup(studentList.get(i), groupList.get(j));
                 } else {
-                    System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupName());
+                    System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupID());
                 }
                 if (j == numOfGroups - 1 && !studentList.get(i).isInGroup()) {
                     noGroupNeeds = true;
@@ -175,7 +177,7 @@ public class classOfStudents {
     void printGroupInfo() {
         for (int i = 0; i < getGroupListSize(); i++) {
             Group group = getGroupList().get(i);
-            System.out.println("Group " + group.getGroupName());
+            System.out.println("Group " + group.getGroupID());
             for (int j = 0; j < group.getStudentListSize(); j++) {
                 Student s = group.getStudentList().get(j);
                 System.out.println(s.getStudentID() + " " + s.getName() + ": " + s.getPrefRole() + ", " + s.getAttendance());
