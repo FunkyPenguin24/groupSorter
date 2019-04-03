@@ -48,7 +48,7 @@ public class DataWriter {
             stm.execute(setStatement);
         }
     }
-
+    
     private boolean studentExists(int studentID, Connection conn) throws SQLException { //the method that checks if a team exists or not
         String setStatement = "SELECT * FROM Students WHERE studentID = '" + studentID + "'"; //creates the SQL statement to get the data of the team that has the same name as the given name
         Statement stm = conn.createStatement(); //creates the statement with the given connection
@@ -64,5 +64,5 @@ public class DataWriter {
     private Connection getConnection() throws SQLException { //gets and returns a connection to the database at the file path specified when the object was instantiated
         return DriverManager.getConnection("jdbc:sqlite:" + databasePath); //returns the connection to the specified database
     }
-
+        
 }
