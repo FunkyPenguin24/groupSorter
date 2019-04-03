@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.sql.*;
 
 /**
+ * Writes student data to a given database
  *
  * @author niall
  */
@@ -16,10 +17,22 @@ public class DataWriter {
 
     private String databasePath = "";
 
+    /**
+     * Writes student data to a given database
+     *
+     * @param dbPath The path of the database the object will write to
+     */
     public DataWriter(String dbPath) {
         databasePath = dbPath;
     }
 
+    /**
+     * Saves a given list of students to the database specified upon
+     * initialization
+     *
+     * @param studentList The list of students to be saved
+     * @throws SQLException
+     */
     void saveStudents(ArrayList<Student> studentList) throws SQLException {
         clearTable("Students");
         Connection conn = getConnection();
@@ -33,47 +46,39 @@ public class DataWriter {
             attendance = currentStudent.getAttendance();
             studentID = currentStudent.getStudentID();
             groupID = currentStudent.getGroupID();
-            if (!studentExists(studentID, conn)) {
-                setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance, groupID) VALUES ('"
-                        + studentID + "', '"
-                        + studentName + "', '"
-                        + prefRole + "', '"
-                        + attendance + "', '"
-                        + groupID + "')";
-            } else {
-                setStatement = "UPDATE Students SET "
-                        + "studentName = '" + studentName + "', "
-                        + "prefRole = '" + prefRole + "', "
-                        + "attendance = '" + attendance + "', "
-                        + "groupID = '" + groupID + "' WHERE "
-                        + "studentID = '" + studentID + "';";
-            }
+            setStatement = "INSERT INTO Students(studentID, studentName, prefRole, attendance, groupID) VALUES ('"
+                    + studentID + "', '"
+                    + studentName + "', '"
+                    + prefRole + "', '"
+                    + attendance + "', '"
+                    + groupID + "')";
             Statement stm = conn.createStatement();
             stm.execute(setStatement);
         }
     }
-    
+
+    /**
+     * Clears a table in the database with a given name - used when overwriting
+     * class data
+     *
+     * @param tableName The name of the table to be cleared
+     * @throws SQLException
+     */
     private void clearTable(String tableName) throws SQLException {
         Connection conn = getConnection();
         String setStatement = "DELETE FROM " + tableName;
         Statement stm = conn.createStatement();
         stm.execute(setStatement);
     }
-    
-    private boolean studentExists(int studentID, Connection conn) throws SQLException { //the method that checks if a team exists or not
-        String setStatement = "SELECT * FROM Students WHERE studentID = '" + studentID + "'"; //creates the SQL statement to get the data of the team that has the same name as the given name
-        Statement stm = conn.createStatement(); //creates the statement with the given connection
-        ResultSet rs = stm.executeQuery(setStatement); //executes the statement above and returns the resulting set of data        
-        if (rs.isClosed()) { //if the results set is closed already, there is no data in it so the team with the given name must not exist
-            return false; //return that the team does not exist
-        } else {
-            rs.close(); //close the results set
-            return true; //return that the team does exist
-        }
-    }
 
+    /**
+     * Returns a connection with the given database
+     *
+     * @return a connection with the given database
+     * @throws SQLException
+     */
     private Connection getConnection() throws SQLException { //gets and returns a connection to the database at the file path specified when the object was instantiated
         return DriverManager.getConnection("jdbc:sqlite:" + databasePath); //returns the connection to the specified database
     }
-        
+
 }

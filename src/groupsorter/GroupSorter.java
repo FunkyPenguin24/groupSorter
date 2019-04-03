@@ -64,6 +64,10 @@ public class GroupSorter {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Window code">
+    /**
+     * Creates and initializes the main program window, filling it with
+     * components that makes it usable
+     */
     void createWindow() {
         window programWindow = new window();
         programWindow.setSize(650, 750);
@@ -110,39 +114,36 @@ public class GroupSorter {
         programWindow.add(saveStudentsDB);
         initComponent(saveStudentsDB, new Rectangle(420, listHeight + 480, 200, 35));
         initSaveButtonDB(saveStudentsDB);
-/*        
-        JButton newLecturerButton = new JButton("New Lecturer");
-        programWindow.add(newLecturerButton);
-*/        
+
         JButton saveToExternalDBButton = new JButton("Export students (database)"); //creates and sets up the button to save students to an external database
         programWindow.add(saveToExternalDBButton);
         initComponent(saveToExternalDBButton, new Rectangle(420, listHeight + 370, 200, 35));
         initExternalDBButton(saveToExternalDBButton);
 
-        JButton saveToExternalCSVButton = new JButton("Export students (text file)");
+        JButton saveToExternalCSVButton = new JButton("Export students (text file)"); //creates and sets up the button to save students to an external text file
         programWindow.add(saveToExternalCSVButton);
         initComponent(saveToExternalCSVButton, new Rectangle(420, listHeight + 425, 200, 35));
         initSaveCSVButton(saveToExternalCSVButton);
 
-        JButton exitButton = new JButton("Exit");
+        JButton exitButton = new JButton("Exit"); //creates and sets up the button to close the system
         programWindow.add(exitButton);
         initComponent(exitButton, new Rectangle(30, programWindow.getHeight() - 90, 150, 30));
         initExitButton(exitButton);
 
-        JLabel numGroupsLabel = new JLabel("Number of students per group");
+        JLabel numGroupsLabel = new JLabel("Number of students per group"); //the label that's above the number chooser
         programWindow.add(numGroupsLabel);
         initComponent(numGroupsLabel, new Rectangle(240, listHeight - 40, 250, 40));
-        
-        groupNumSpinner = new JSpinner();
+
+        groupNumSpinner = new JSpinner(); //the number chooser for students per group
         programWindow.add(groupNumSpinner);
         initComponent(groupNumSpinner, new Rectangle(305, listHeight, 40, 40));
 
-        groupNumberList = new JList();
+        groupNumberList = new JList(); //the list that holds the group numbers
         programWindow.add(groupNumberList);
         initComponent(groupNumberList, new Rectangle(420, listHeight, 15, 350));
         initGroupNumberList(groupNumberList);
 
-        groupMemberList = new JList();
+        groupMemberList = new JList(); //the list that holds the names of students in groups
         programWindow.add(groupMemberList);
         initComponent(groupMemberList, new Rectangle(435, listHeight, 100, 350));
         initGroupMemberList(groupMemberList);
@@ -156,6 +157,11 @@ public class GroupSorter {
         button.setBounds(bounds);
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initHelpButton(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -165,6 +171,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initExitButton(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -174,6 +185,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initSaveButtonDB(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -189,6 +205,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initExternalDBButton(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -207,6 +228,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initSaveCSVButton(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -246,6 +272,11 @@ public class GroupSorter {
 
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initSortButton(JButton sortButton) {
         sortButton.addActionListener(new ActionListener() {
             @Override
@@ -263,9 +294,14 @@ public class GroupSorter {
     }
 
     private boolean canSort() {
-        return ((int)groupNumSpinner.getValue() > 0 && studentList.getModel().getSize() > 0);
+        return ((int) groupNumSpinner.getValue() > 0 && studentList.getModel().getSize() > 0);
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initEditStudentButton(JButton button, JList studentList) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -294,6 +330,11 @@ public class GroupSorter {
         list.setListData(nameList);
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initAddStudentManual(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -303,6 +344,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initAddStudentBatch(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -337,6 +383,11 @@ public class GroupSorter {
         });
     }
 
+    /**
+     * Initializes a button with an action listener
+     *
+     * @param button The button to be initialized
+     */
     private void initAddStudentDB(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -418,11 +469,18 @@ public class GroupSorter {
     }
 
     // </editor-fold>
+    /**
+     * Loads a set of students from a database into the system
+     */
     private void loadStudentsFromDB() {
         File databaseFile = new File("src\\db\\classDatabase.db");
         readStudentsFromDB(databaseFile);
     }
 
+    /**
+     * Creates a popup that allows the user to add a student manually into the
+     * system
+     */
     private void addStudentPopup() {
         JTextField studentIDField = new JTextField(5);
         JTextField studentName = new JTextField(5);
@@ -452,6 +510,12 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Creates a popup that allows the user to edit a selected student's
+     * information
+     *
+     * @param s The student to be editted
+     */
     private void editStudentPopup(Student s) {
         JTextField studentIDField = new JTextField(5);
         studentIDField.setText(s.getStudentID() + "");
@@ -487,6 +551,15 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Updates a student's information with the given values
+     *
+     * @param s The student to be updated
+     * @param id The student's new ID
+     * @param name The student's new name
+     * @param role The student's new role
+     * @param attendance The student's new attendance
+     */
     private void updateStudent(Student s, String id, String name, String role, String attendance) {
         s.setStudentID(Integer.parseInt(id));
         s.setName(name);
@@ -495,10 +568,20 @@ public class GroupSorter {
         initNameList(studentList);
     }
 
+    /**
+     * Creates a new class of student
+     */
     private void createClass() {
         cl = new classOfStudents("Nemitari");
     }
 
+    /**
+     * Creates a popup that lets the user choose a file and then returns that
+     * file
+     *
+     * @param fileTypeNeeded The type of file that is needed (text or database)
+     * @return a file chosen by the user
+     */
     private File selectDataFilePopup(String fileTypeNeeded) {
         JFileChooser fileChooser = new JFileChooser();
         int value = fileChooser.showOpenDialog(groupNumberList);
@@ -530,6 +613,12 @@ public class GroupSorter {
         return null;
     }
 
+    /**
+     * Extracts student information from a given database file and puts it into
+     * the system
+     *
+     * @param fileToBeRead The database file that will be read
+     */
     private void readStudentsFromDB(File fileToBeRead) {
         DataReader dr = new DataReader(fileToBeRead.getPath());
         ArrayList<Student> readStudents = null;
@@ -546,6 +635,9 @@ public class GroupSorter {
         updateGroupLists();
     }
 
+    /**
+     * Updates the lists displayed in the main window
+     */
     private void updateGroupLists() {
         System.out.println("Help");
         for (int i = 0; i < cl.getGroupListSize(); i++) { //for every group
@@ -554,6 +646,12 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Extracts student information from a given text file and puts it into the
+     * system
+     *
+     * @param fileToBeRead The text file that will be read
+     */
     private void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileToBeRead));
@@ -570,6 +668,11 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Analyses the data extracted from a text file
+     *
+     * @param studentInfo The raw information extracted from the file
+     */
     private void analyseData(ArrayList<String> studentInfo) {
         int studentID = 0;
         String studentName = "";
@@ -610,6 +713,11 @@ public class GroupSorter {
         updateGroupLists();
     }
 
+    /**
+     * Saves a given list of students into the internal database file
+     *
+     * @param studentList List of students in the class
+     */
     private void saveStudentsToDB(ArrayList<Student> studentList) {
         DataWriter dw = new DataWriter("src\\db\\classDatabase.db");
         try {
@@ -619,11 +727,17 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Saves a given list of students into a database at a given file path
+     *
+     * @param studentList List of students in the class
+     * @param dbPath The file path of the user's chosen database
+     */
     private void saveStudentsToDB(ArrayList<Student> studentList, String dbPath) {
         DataWriter dw = new DataWriter(dbPath);
         try {
             dw.saveStudents(studentList);
-        } catch (SQLException ex) {
+        } catch (SQLException ex) { //if there is an SQL error
             JOptionPane.showMessageDialog(groupNumberList,
                     "An error has occured with the database, please check the information provided to ensure it is set up correctly."
                     + " If problems persist, call technical support on XXXX XXX XXXX for further assistance");
@@ -631,6 +745,12 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Saves the list of students in the class into a text file
+     *
+     * @param studentList The list of students to be saved
+     * @param filePath The file path of the user's chosen text file
+     */
     private void saveStudentsToCSV(ArrayList<Student> studentList, String filePath) {
         File fileToWrite = new File(filePath);
         try {
@@ -652,6 +772,16 @@ public class GroupSorter {
         }
     }
 
+    /**
+     * Creates a student with the given parameters
+     *
+     * @param id The unique identifier of the student
+     * @param name The name of the student
+     * @param role The preferred role of the student
+     * @param attendance The student's attendance
+     * @param groupID The unique identifier of the group associated with the
+     * student (if no group, set to -1)
+     */
     private void createStudent(int id, String name, String role, double attendance, int groupID) {
         Student s = new Student(id, name, role, attendance, groupID);
         addStudentToList(id, name, role, attendance);
@@ -659,21 +789,37 @@ public class GroupSorter {
         cl.sortStudentsByAttendance();
     }
 
+    /**
+     * Inserts a student that has already been created into the system
+     *
+     * @param student Student to be inserted into the system
+     */
     private void createStudent(Student student) {
         addStudentToList(student.getStudentID(), student.getName(), student.getPrefRole(), student.getAttendance());
         cl.addStudent(student);
         cl.sortStudentsByAttendance();
     }
 
+    /**
+     * Sets the number of students per group
+     *
+     * @param n Number of students per group
+     */
     private void setNumOfStudentsPerGroup(int n) {
         cl.setStudentsPerGroup(n);
     }
 
+    /**
+     * Sorts the students into groups
+     */
     private void sortStudents() {
         cl.sortStudentsIntoGroups();
-        cl.printGroupInfo();
     }
 
+    /**
+     * Clears the system of all data - used before loading a new class into the
+     * system
+     */
     private void clearSystem() {
         cl.clearGroups();
         cl.clearStudents();
@@ -683,6 +829,9 @@ public class GroupSorter {
         groupMemberList.setListData(emptyList);
     }
 
+    /**
+     * Creates the help menu
+     */
     private void showInfoMenu() {
         helpMenu hm = new helpMenu();
         hm.setVisible(true);
