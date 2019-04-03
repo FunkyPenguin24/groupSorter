@@ -10,9 +10,11 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -105,12 +107,12 @@ public class GroupSorter {
         programWindow.add(saveToExternalDBButton);
         initComponent(saveToExternalDBButton, new Rectangle(420, listHeight + 370, 200, 35));
         initExternalDBButton(saveToExternalDBButton);
-        
+
         JButton saveToExternalCSVButton = new JButton("Export students (text file)");
         programWindow.add(saveToExternalCSVButton);
         initComponent(saveToExternalCSVButton, new Rectangle(420, listHeight + 425, 200, 35));
         initSaveCSVButton(saveToExternalCSVButton);
-        
+
         groupNumSpinner = new JSpinner();
         programWindow.add(groupNumSpinner);
         initComponent(groupNumSpinner, new Rectangle(305, listHeight, 40, 40));
@@ -148,16 +150,25 @@ public class GroupSorter {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File chosenFile = selectDataFilePopup("db");
-                if (chosenFile != null)
+                if (chosenFile != null) {
                     saveStudentsToDB(cl.getStudentList(), chosenFile.getPath());
+                }
             }
         });
     }
-    
+
     private void initSaveCSVButton(JButton button) {
-        
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File chosenFile = selectDataFilePopup("text");
+                if (chosenFile != null) {
+                    saveStudentsToCSV(cl.getStudentList(), chosenFile.getPath());
+                }
+            }
+        });
     }
-    
+
     void initLabels(window programWindow) {
         JLabel studentLabel = new JLabel("Students in class");
         studentLabel.setVisible(true);
@@ -414,7 +425,7 @@ public class GroupSorter {
                             "Please pick a suitable file type (.txt)");
                 }
             } else {
-                JOptionPane.showMessageDialog(groupNumberList, 
+                JOptionPane.showMessageDialog(groupNumberList,
                         "Please pick a suitable file type (.txt/.db)");
                 return null;
             }
@@ -468,10 +479,30 @@ public class GroupSorter {
         try {
             dw.saveStudents(studentList);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(groupNumberList, 
+            JOptionPane.showMessageDialog(groupNumberList,
                     "An error has occured with the database, please check the information provided to ensure it is set up correctly."
-                            + " If problems persist, call technical support on XXXX XXX XXXX for further assistance");
+                    + " If problems persist, call technical support on XXXX XXX XXXX for further assistance");
             //Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void saveStudentsToCSV(ArrayList<Student> studentList, String filePath) {
+        File fileToWrite = new File(filePath);
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite));
+            for (int i = 0; i < studentList.size(); i++) {
+                String studentLine = "";
+                studentLine += studentList.get(i).getStudentID() + ",";
+                studentLine += studentList.get(i).getName() + ",";
+                studentLine += studentList.get(i).getPrefRole() + ",";
+                studentLine += studentList.get(i).getAttendance() + ",";
+                System.out.println(studentLine);
+                writer.write(studentLine);
+                writer.newLine();
+            }
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
