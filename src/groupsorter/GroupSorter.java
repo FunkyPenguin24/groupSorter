@@ -46,6 +46,7 @@ public class GroupSorter {
     int labelHeight = 30;
     JSpinner groupNumSpinner;
     ArrayList<String> studentNames;
+    boolean loaded;
 
     /**
      * @param args the command line arguments
@@ -56,6 +57,7 @@ public class GroupSorter {
     }
 
     void startProgram() {
+        loaded = false;
         studentNames = new ArrayList<>();
         createClass();
         createWindow();
@@ -263,11 +265,28 @@ public class GroupSorter {
             public void actionPerformed(ActionEvent e) {
                 File chosenFile = selectDataFilePopup("null");
                 if (chosenFile != null) {
-                    String fileName = chosenFile.getName();
-                    if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
-                        readStudentsFromCSV(chosenFile);
-                    } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a text file
-                        readStudentsFromDB(chosenFile);
+                    if (loaded) { //if data is already loaded onto the system
+                        int result = JOptionPane.showConfirmDialog(groupNumberList,
+                                "Are you sure you want to load this class? This will overwrite any unsaved data",
+                                "Please confirm",
+                                JOptionPane.YES_NO_OPTION);
+                        if (result == JOptionPane.YES_OPTION) {
+                            clearSystem();
+                            String fileName = chosenFile.getName();
+                            if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
+                                readStudentsFromCSV(chosenFile);
+                            } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a text file
+                                readStudentsFromDB(chosenFile);
+                            }
+                        }
+                    } else { //if data is not loaded onto the system
+                        loaded = true;
+                        String fileName = chosenFile.getName();
+                        if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
+                            readStudentsFromCSV(chosenFile);
+                        } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a text file
+                            readStudentsFromDB(chosenFile);
+                        }
                     }
                 }
             }
@@ -278,7 +297,19 @@ public class GroupSorter {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadStudentsFromDB();
+                if (loaded) { //if data is loaded onto the system
+                    int result = JOptionPane.showConfirmDialog(groupNumberList,
+                            "Are you sure you want to load this class? This will overwrite any unsaved data",
+                            "Please confirm",
+                            JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        clearSystem();
+                        loadStudentsFromDB();
+                    }
+                } else { //if no data is loaded onto the system
+                    loaded = true;
+                        loadStudentsFromDB();
+                }
             }
         });
     }
@@ -494,6 +525,7 @@ public class GroupSorter {
             Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     private void analyseData(ArrayList<String> studentInfo) {
         int studentID = 0;
         String studentName = "";
@@ -576,7 +608,6 @@ public class GroupSorter {
         }
     }
 
-
     private void createStudent(int id, String name, String role, double attendance, int groupID) {
         Student s = new Student(id, name, role, attendance, groupID);
         addStudentToList(id, name, role, attendance);
@@ -597,6 +628,15 @@ public class GroupSorter {
     private void sortStudents() {
         cl.sortStudentsIntoGroups();
         cl.printGroupInfo();
+    }
+
+    private void clearSystem() {
+        cl.clearGroups();
+        cl.clearStudents();
+        String[] emptyList = new String[0];
+        studentList.setListData(emptyList);
+        groupNumberList.setListData(emptyList);
+        groupMemberList.setListData(emptyList);
     }
 
 }

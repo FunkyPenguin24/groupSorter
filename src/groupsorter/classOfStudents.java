@@ -100,12 +100,18 @@ public class classOfStudents {
     }
 
     void clearGroups() {
-        for (int i = 0; i < groupList.size(); i++) {
+        for (int i = groupList.size() - 1; i >= 0; i--) {
             groupList.get(i).clearStudents();
             groupList.remove(i);
         }
     }
-
+    
+    void clearStudents() {
+        for (int i = studentList.size() - 1; i >= 0; i--) {
+            studentList.remove(i);
+        }
+    }
+    
     void addStudentToGroup(Student s, Group g) {
         //System.out.println(s.getName() + " was added to group " + g.getGroupName());
         g.addStudent(s);
