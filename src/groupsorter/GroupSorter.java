@@ -67,6 +67,7 @@ public class GroupSorter {
     void createWindow() {
         window programWindow = new window();
         programWindow.setSize(650, 750);
+        programWindow.setLocationRelativeTo(null);
 
         initLabels(programWindow);
 
@@ -100,11 +101,19 @@ public class GroupSorter {
         initComponent(editStudentButton, new Rectangle(250, listHeight + 115, 150, 35));
         initEditStudentButton(editStudentButton, studentList);
 
+        JButton helpButton = new JButton("Help!"); //creates and sets up the button to show the help menu
+        programWindow.add(helpButton);
+        initComponent(helpButton, new Rectangle(250, listHeight + 170, 150, 35));
+        initHelpButton(helpButton);
+
         JButton saveStudentsDB = new JButton("Save loaded students"); //creates and sets up the button to save students in the internal database
         programWindow.add(saveStudentsDB);
         initComponent(saveStudentsDB, new Rectangle(420, listHeight + 480, 200, 35));
         initSaveButtonDB(saveStudentsDB);
-
+/*        
+        JButton newLecturerButton = new JButton("New Lecturer");
+        programWindow.add(newLecturerButton);
+*/        
         JButton saveToExternalDBButton = new JButton("Export students (database)"); //creates and sets up the button to save students to an external database
         programWindow.add(saveToExternalDBButton);
         initComponent(saveToExternalDBButton, new Rectangle(420, listHeight + 370, 200, 35));
@@ -115,6 +124,15 @@ public class GroupSorter {
         initComponent(saveToExternalCSVButton, new Rectangle(420, listHeight + 425, 200, 35));
         initSaveCSVButton(saveToExternalCSVButton);
 
+        JButton exitButton = new JButton("Exit");
+        programWindow.add(exitButton);
+        initComponent(exitButton, new Rectangle(30, programWindow.getHeight() - 90, 150, 30));
+        initExitButton(exitButton);
+
+        JLabel numGroupsLabel = new JLabel("Number of students per group");
+        programWindow.add(numGroupsLabel);
+        initComponent(numGroupsLabel, new Rectangle(240, listHeight - 40, 250, 40));
+        
         groupNumSpinner = new JSpinner();
         programWindow.add(groupNumSpinner);
         initComponent(groupNumSpinner, new Rectangle(305, listHeight, 40, 40));
@@ -136,6 +154,24 @@ public class GroupSorter {
         button.setVisible(true);
         button.setEnabled(true);
         button.setBounds(bounds);
+    }
+
+    private void initHelpButton(JButton button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showInfoMenu();
+            }
+        });
+    }
+
+    private void initExitButton(JButton button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
     private void initSaveButtonDB(JButton button) {
@@ -214,12 +250,20 @@ public class GroupSorter {
         sortButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setNumOfStudentsPerGroup((int) groupNumSpinner.getValue());
-                sortStudents();
-                fillGroupNumberList(groupNumberList);
-                fillGroupMemberList(groupMemberList);
+                if (canSort()) {
+                    setNumOfStudentsPerGroup((int) groupNumSpinner.getValue());
+                    sortStudents();
+                    fillGroupNumberList(groupNumberList);
+                    fillGroupMemberList(groupMemberList);
+                } else {
+                    System.out.println("help");
+                }
             }
         });
+    }
+
+    private boolean canSort() {
+        return ((int)groupNumSpinner.getValue() > 0 && studentList.getModel().getSize() > 0);
     }
 
     private void initEditStudentButton(JButton button, JList studentList) {
@@ -308,7 +352,7 @@ public class GroupSorter {
                     }
                 } else { //if no data is loaded onto the system
                     loaded = true;
-                        loadStudentsFromDB();
+                    loadStudentsFromDB();
                 }
             }
         });
@@ -637,6 +681,13 @@ public class GroupSorter {
         studentList.setListData(emptyList);
         groupNumberList.setListData(emptyList);
         groupMemberList.setListData(emptyList);
+    }
+
+    private void showInfoMenu() {
+        helpMenu hm = new helpMenu();
+        hm.setVisible(true);
+        hm.setEnabled(true);
+        hm.setLocationRelativeTo(null);
     }
 
 }

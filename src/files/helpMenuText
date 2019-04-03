@@ -1,0 +1,18 @@
+Buttons
+"Add student" - Manually adds a student into the system and displays them in the list on the left
+"Import students (file)" - Select either a database or a text file to load a class of students in from. They will be stored in the system and displayed in the list on the left
+"Load saved students" - Loads the students from a database within the program itself - there is only one but it is loaded automatically so there is no need for file selection
+"Export students (database)" - Saves the students to an external database of the user's choosing
+"Export students (text file)" - Saves the students to an external text file of the user's choosing
+"Save loaded students" - Saves the students into a database within the program itself
+"Sort" - Sorts the students in the list on the left into different groups and stores them in the list on the right
+"Edit student" - If a student is selected in the list on the left, this button lets the user edit their details
+"Help!" - Shows this menu
+"Exit" - Closes the system
+
+Formatting
+Text files must be formatted with each student's information being on a seperate line. The lines must be laid out as follows
+StudentID,StudentName,PreferredRole,Attendance,GroupNumber
+If the student is not yet in a group, GroupNumber should be set to -1
+
+Database files must have a table named "Students" which has the following 5 columns: studentID, studentName, prefRole, attendance, groupID
