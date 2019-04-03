@@ -86,11 +86,6 @@ public class GroupSorter {
         initComponent(addStudentDB, new Rectangle(30, listHeight + 480, 200, 35));
         initAddStudentDB(addStudentDB);
 
-        JButton saveStudentsDB = new JButton("Export students (database)"); //creates and sets up the button to save students in the internal database
-        programWindow.add(saveStudentsDB);
-        initComponent(saveStudentsDB, new Rectangle(420, listHeight + 370, 150, 35));
-        initSaveButtonDB(saveStudentsDB);
-
         JButton sortButton = new JButton("Sort"); //creates and sets up the button to sort students
         programWindow.add(sortButton);
         initComponent(sortButton, new Rectangle(250, listHeight + 60, 150, 35));
@@ -101,6 +96,21 @@ public class GroupSorter {
         initComponent(editStudentButton, new Rectangle(250, listHeight + 115, 150, 35));
         initEditStudentButton(editStudentButton, studentList);
 
+        JButton saveStudentsDB = new JButton("Save loaded students"); //creates and sets up the button to save students in the internal database
+        programWindow.add(saveStudentsDB);
+        initComponent(saveStudentsDB, new Rectangle(420, listHeight + 480, 200, 35));
+        initSaveButtonDB(saveStudentsDB);
+
+        JButton saveToExternalDBButton = new JButton("Export students (database)"); //creates and sets up the button to save students to an external database
+        programWindow.add(saveToExternalDBButton);
+        initComponent(saveToExternalDBButton, new Rectangle(420, listHeight + 370, 200, 35));
+        initExternalDBButton(saveToExternalDBButton);
+        
+        JButton saveToExternalCSVButton = new JButton("Export students (text file)");
+        programWindow.add(saveToExternalCSVButton);
+        initComponent(saveToExternalCSVButton, new Rectangle(420, listHeight + 425, 200, 35));
+        initSaveCSVButton(saveToExternalCSVButton);
+        
         groupNumSpinner = new JSpinner();
         programWindow.add(groupNumSpinner);
         initComponent(groupNumSpinner, new Rectangle(305, listHeight, 40, 40));
@@ -117,13 +127,13 @@ public class GroupSorter {
 
         programWindow.setVisible(true);
     }
-    
+
     private void initComponent(JComponent button, Rectangle bounds) {
         button.setVisible(true);
         button.setEnabled(true);
         button.setBounds(bounds);
     }
-    
+
     void initSaveButtonDB(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
@@ -133,6 +143,21 @@ public class GroupSorter {
         });
     }
 
+    private void initExternalDBButton(JButton button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File chosenFile = selectDataFilePopup("db");
+                if (chosenFile != null)
+                    saveStudentsToDB(cl.getStudentList(), chosenFile.getPath());
+            }
+        });
+    }
+    
+    private void initSaveCSVButton(JButton button) {
+        
+    }
+    
     void initLabels(window programWindow) {
         JLabel studentLabel = new JLabel("Students in class");
         studentLabel.setVisible(true);
@@ -207,7 +232,13 @@ public class GroupSorter {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                selectDataFilePopup();
+                File chosenFile = selectDataFilePopup("null");
+                String fileName = chosenFile.getName();
+                if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
+                    readStudentsFromCSV(chosenFile);
+                } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a text file
+                    readStudentsFromDB(chosenFile);
+                }
             }
         });
     }
@@ -282,11 +313,7 @@ public class GroupSorter {
     // </editor-fold>
     private void loadStudentsFromDB() {
         File databaseFile = new File("src\\db\\classDatabase.db");
-        try {
-            readStudentsFromDB(databaseFile);
-        } catch (SQLException ex) {
-            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        readStudentsFromDB(databaseFile);
     }
 
     private void addStudentPopup() {
@@ -352,7 +379,7 @@ public class GroupSorter {
             //addStudentToList(Integer.parseInt(studentIDField.getText()), studentName.getText(), studentRole.getText(), Double.parseDouble(studentAtt.getText()));
         }
     }
-    
+
     private void updateStudent(Student s, String id, String name, String role, String attendance) {
         s.setStudentID(Integer.parseInt(id));
         s.setName(name);
@@ -360,32 +387,50 @@ public class GroupSorter {
         s.setAttendance(Double.parseDouble(attendance));
         initNameList(studentList);
     }
-    
+
     private void createClass() {
         cl = new classOfStudents("Nemitari");
     }
 
-    private void selectDataFilePopup() {
+    private File selectDataFilePopup(String fileTypeNeeded) {
         JFileChooser fileChooser = new JFileChooser();
         int value = fileChooser.showOpenDialog(groupNumberList);
+        File chosenFile;
         if (value == JFileChooser.APPROVE_OPTION) {
-            File chosenFile = fileChooser.getSelectedFile();
+            chosenFile = fileChooser.getSelectedFile();
             String fileName = chosenFile.getName();
             if (fileName.substring(fileName.length() - 4, fileName.length()).equals(".txt")) { //if the file is a text file
-                readStudentsFromCSV(chosenFile);
-            } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a database file
-                try {
-                    readStudentsFromDB(chosenFile);
-                } catch (SQLException ex) {
-                    Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+                if (fileTypeNeeded.equals("text") || fileTypeNeeded.equals("null")) {
+                    return chosenFile;
+                } else if (fileTypeNeeded.equals("db")) {
+                    JOptionPane.showMessageDialog(groupNumberList,
+                            "Please pick a suitable file type (.db)");
                 }
+            } else if (fileName.substring(fileName.length() - 3, fileName.length()).equals(".db")) { //if the file is a database file
+                if (fileTypeNeeded.equals("db") || fileTypeNeeded.equals("null")) {
+                    return chosenFile;
+                } else if (fileTypeNeeded.equals("text")) {
+                    JOptionPane.showMessageDialog(groupNumberList,
+                            "Please pick a suitable file type (.txt)");
+                }
+            } else {
+                JOptionPane.showMessageDialog(groupNumberList, 
+                        "Please pick a suitable file type (.txt/.db)");
+                return null;
             }
+            return null;
         }
+        return null;
     }
 
-    private void readStudentsFromDB(File fileToBeRead) throws SQLException {
+    private void readStudentsFromDB(File fileToBeRead) {
         DataReader dr = new DataReader(fileToBeRead.getPath());
-        ArrayList<Student> readStudents = dr.loadStudents();
+        ArrayList<Student> readStudents = null;
+        try {
+            readStudents = dr.loadStudents();
+        } catch (SQLException ex) {
+            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (int i = 0; i < readStudents.size(); i++) {
             createStudent(readStudents.get(i));
         }
@@ -417,16 +462,19 @@ public class GroupSorter {
             Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void saveStudentsToDB(ArrayList<Student> studentList, String dbPath) {
         DataWriter dw = new DataWriter(dbPath);
         try {
             dw.saveStudents(studentList);
         } catch (SQLException ex) {
-            Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(groupNumberList, 
+                    "An error has occured with the database, please check the information provided to ensure it is set up correctly."
+                            + " If problems persist, call technical support on XXXX XXX XXXX for further assistance");
+            //Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void analyseData(ArrayList<String> studentInfo) {
         int studentID = 0;
         String studentName = "";
