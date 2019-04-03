@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author niall
  */
 public class classOfStudents {
-    
+
     private int numOfGroups;
     private int studentsPerGroup;
     private String lecturerName;
@@ -33,13 +33,13 @@ public class classOfStudents {
         double numberOfStudents = getStudentListSize();
         double studentsPerGroup = sPg;
         this.studentsPerGroup = sPg;
-        double numOfGroups = (numberOfStudents/studentsPerGroup);
+        double numOfGroups = (numberOfStudents / studentsPerGroup);
         setNumOfGroups((int) Math.ceil(numOfGroups));
         System.out.println("STUDENTS PER GROUP " + studentsPerGroup);
         System.out.println("TOTAL STUDENT NUMBER " + getStudentListSize());
         System.out.println("NUMBER OF GROUPS NEEDED " + getNumOfGroups());
     }
-    
+
     int getNumOfGroups() {
         return numOfGroups;
     }
@@ -49,11 +49,11 @@ public class classOfStudents {
         numOfGroups = n;
         createGroups(n);
     }
-        
+
     String getLecturerName() {
         return lecturerName;
     }
-    
+
     void setLecturerName(String n) {
         lecturerName = n;
     }
@@ -61,11 +61,11 @@ public class classOfStudents {
     int getStudentListSize() {
         return studentList.size();
     }
-    
+
     int getGroupListSize() {
         return groupList.size();
     }
-    
+
     ArrayList<Student> getStudentList() {
         return studentList;
     }
@@ -76,6 +76,15 @@ public class classOfStudents {
 
     void addStudent(Student s) {
         studentList.add(s);
+        if (s.getGroupID() != -1) { //if the student has a group
+            if (getGroupByID(s.getGroupID()) != null) { //if that group is already created
+                
+            } else { //if the group doesn't exist
+                groupList.add(new Group(s.getGroupID())); //creates the group
+                numOfGroups++;
+            }
+            getGroupByID(s.getGroupID()).addStudent(s); //adds the student to the group
+        }
     }
 
     void removeStudent(Student s) {
@@ -85,17 +94,18 @@ public class classOfStudents {
     void createGroups(int n) {
         numOfGroups = n;
         clearGroups();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             groupList.add(new Group(i + 1));
+        }
     }
-    
+
     void clearGroups() {
         for (int i = 0; i < groupList.size(); i++) {
             groupList.get(i).clearStudents();
             groupList.remove(i);
         }
     }
-    
+
     void addStudentToGroup(Student s, Group g) {
         //System.out.println(s.getName() + " was added to group " + g.getGroupName());
         g.addStudent(s);
@@ -119,28 +129,52 @@ public class classOfStudents {
         System.out.println("number of students: " + studentNum);
         System.out.println("AVERAGE NUMBER OF STUDENTS PER GROUP IS " + maxGroupSize);
         for (int i = 0; i < studentNum; i++) { //loop through each student
-            noGroupNeeds = false;
-            for (int j = 0; j < numOfGroups; j++) { //loop through each group
-                if (canStudentGoToGroup(studentList.get(i), groupList.get(j), maxGroupSize, noGroupNeeds)) {
-                    addStudentToGroup(studentList.get(i), groupList.get(j));
-                } else {
-                    System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupID());
+            if (studentList.get(i).getGroupID() != -1) {
+                if (getGroupByID(studentList.get(i).getGroupID()) == null) {
+                    createGroup(studentList.get(i).getGroupID());
                 }
-                if (j == numOfGroups - 1 && !studentList.get(i).isInGroup()) {
-                    noGroupNeeds = true;
-                    j = -1; //sets j to -1 because for loops increment at the end of the loop, meaning j will be reset to its initial 0 when the loop starts again
+                addStudentToGroup(studentList.get(i), getGroupByID(studentList.get(i).getGroupID()));
+            } else {
+                noGroupNeeds = false;
+                for (int j = 0; j < numOfGroups; j++) { //loop through each group
+                    if (canStudentGoToGroup(studentList.get(i), groupList.get(j), maxGroupSize, noGroupNeeds)) {
+                        addStudentToGroup(studentList.get(i), groupList.get(j));
+                    } else {
+                        System.out.println(studentList.get(i).getName() + " can't join team " + groupList.get(j).getGroupID());
+                    }
+                    if (j == numOfGroups - 1 && !studentList.get(i).isInGroup()) {
+                        noGroupNeeds = true;
+                        j = -1; //sets j to -1 because for loops increment at the end of the loop, meaning j will be reset to its initial 0 when the loop starts again
+                    }
                 }
             }
         }
     }
-        
-    boolean canStudentGoToGroup(Student s, Group g, double maxGroupSize, boolean noGroupNeeds) {
-        if (noGroupNeeds) //if no group needs the student
-            return (!s.isInGroup() && g.getStudentListSize() < maxGroupSize); //returns true is the student is not in a group and the number of students in the group isn't the max number
-        else
-            return (g.needsStudent(s) && !s.isInGroup() && g.getStudentListSize() < maxGroupSize);            
+    
+    private void createGroup(int id) {
+        Group newGroup = new Group(id);
+        groupList.add(newGroup);
     }
     
+    private Group getGroupByID(int id) {
+        Group g = null;
+        for (int i = 0; i < groupList.size(); i++) {
+            if (groupList.get(i).getGroupID() == id) {
+                return groupList.get(i);
+            }
+        }
+        return g;
+    }
+
+    boolean canStudentGoToGroup(Student s, Group g, double maxGroupSize, boolean noGroupNeeds) {
+        if (noGroupNeeds) //if no group needs the student
+        {
+            return (!s.isInGroup() && g.getStudentListSize() < maxGroupSize); //returns true is the student is not in a group and the number of students in the group isn't the max number
+        } else {
+            return (g.needsStudent(s) && !s.isInGroup() && g.getStudentListSize() < maxGroupSize);
+        }
+    }
+
     String[] getNamesArray() {
         String[] studentNames = new String[getStudentList().size()];
         for (int i = 0; i < getStudentList().size(); i++) {
@@ -148,32 +182,35 @@ public class classOfStudents {
         }
         return studentNames;
     }
-    
+
     String[] getNamesForList() {
         int studentsWithoutGroups = 0;
-        for (int i = 0; i < getStudentList().size(); i++)
-            if (!getStudentList().get(i).isInGroup())
+        for (int i = 0; i < getStudentList().size(); i++) {
+            if (!getStudentList().get(i).isInGroup()) {
                 studentsWithoutGroups++;
+            }
+        }
         String[] studentNames = new String[studentsWithoutGroups];
         int j = 0;
         for (int i = 0; i < getStudentList().size(); i++) {
             Student s = getStudentList().get(i);
-            if (!s.isInGroup()){
+            if (!s.isInGroup()) {
                 studentNames[j] = s.getStudentID() + ", " + s.getName() + ", " + s.getPrefRole() + ", " + s.getAttendance();
                 j++;
             }
         }
         return studentNames;
     }
-    
+
     Student getStudentByID(int id) {
         for (int i = 0; i < studentList.size(); i++) {
-            if (studentList.get(i).getStudentID() == id)
+            if (studentList.get(i).getStudentID() == id) {
                 return studentList.get(i);
+            }
         }
         return null;
     }
-    
+
     void printGroupInfo() {
         for (int i = 0; i < getGroupListSize(); i++) {
             Group group = getGroupList().get(i);
@@ -185,7 +222,7 @@ public class classOfStudents {
             System.out.println();
         }
     }
-    
+
     void sortStudentsByAttendance() {
         boolean swap; //creates the swap variable
         do {
@@ -201,8 +238,9 @@ public class classOfStudents {
                 }
             }
         } while (swap); //loops until there are no swaps in a loop
-        for (int i = 0; i < studentList.size(); i++)
+        for (int i = 0; i < studentList.size(); i++) {
             System.out.println(studentList.get(i).getAttendance());
+        }
     }
-    
+
 }

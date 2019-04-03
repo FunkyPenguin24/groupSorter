@@ -1,0 +1,7 @@
+18365920,Georgia,Programming,38.25,-1,
+10485629,Sean,Documentation,84.35,-1,
+92857104,Luke,Documentation,68.12,-1,
+29471048,Emanuel,Documentation,65.12,-1,
+20491847,Peter,Programming,45.36,-1,
+30491841,Jake,Programming,95.21,-1
+10394819,Michael,Documentation,87.25,-1

@@ -140,12 +140,13 @@ public class GroupSorter {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(groupNumberList, 
-                        "Are you sure you want to overwrite the database?", 
-                        "Please confirm", 
+                int result = JOptionPane.showConfirmDialog(groupNumberList,
+                        "Are you sure you want to overwrite the database?",
+                        "Please confirm",
                         JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION)
+                if (result == JOptionPane.YES_OPTION) {
                     saveStudentsToDB(cl.getStudentList());
+                }
             }
         });
     }
@@ -156,12 +157,13 @@ public class GroupSorter {
             public void actionPerformed(ActionEvent e) {
                 File chosenFile = selectDataFilePopup("db");
                 if (chosenFile != null) {
-                int result = JOptionPane.showConfirmDialog(groupNumberList, 
-                        "Are you sure you want to overwrite the database?", 
-                        "Please confirm", 
-                        JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION)
-                    saveStudentsToDB(cl.getStudentList(), chosenFile.getPath());
+                    int result = JOptionPane.showConfirmDialog(groupNumberList,
+                            "Are you sure you want to overwrite the database?",
+                            "Please confirm",
+                            JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        saveStudentsToDB(cl.getStudentList(), chosenFile.getPath());
+                    }
                 }
             }
         });
@@ -173,12 +175,13 @@ public class GroupSorter {
             public void actionPerformed(ActionEvent e) {
                 File chosenFile = selectDataFilePopup("text");
                 if (chosenFile != null) {
-                int result = JOptionPane.showConfirmDialog(groupNumberList, 
-                        "Are you sure you want to overwrite the saved data?", 
-                        "Please confirm", 
-                        JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION)
-                    saveStudentsToCSV(cl.getStudentList(), chosenFile.getPath());
+                    int result = JOptionPane.showConfirmDialog(groupNumberList,
+                            "Are you sure you want to overwrite the saved data?",
+                            "Please confirm",
+                            JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        saveStudentsToCSV(cl.getStudentList(), chosenFile.getPath());
+                    }
                 }
             }
         });
@@ -465,6 +468,15 @@ public class GroupSorter {
         }
         cl.sortStudentsByAttendance();
         System.out.println("Students loaded");
+        updateGroupLists();
+    }
+
+    private void updateGroupLists() {
+        System.out.println("Help");
+        for (int i = 0; i < cl.getGroupListSize(); i++) { //for every group
+            fillGroupNumberList(groupNumberList);
+            fillGroupMemberList(groupMemberList);
+        }
     }
 
     private void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
@@ -481,6 +493,45 @@ public class GroupSorter {
         } catch (IOException ex) {
             Logger.getLogger(GroupSorter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    private void analyseData(ArrayList<String> studentInfo) {
+        int studentID = 0;
+        String studentName = "";
+        String studentRole = "";
+        double studentAtt = 0;
+        int groupID = 0;
+        for (int i = 0; i < studentInfo.size(); i++) {
+            int value = 0;
+            int valueStart = 0;
+            String studentInfoLine = studentInfo.get(i);
+            for (int j = 0; j < studentInfoLine.length(); j++) {
+                if (",".equals(studentInfoLine.substring(j, j + 1))) {
+                    switch (value) {
+                        case 0:
+                            studentID = Integer.parseInt(studentInfoLine.substring(valueStart, j));
+                            break;
+                        case 1:
+                            studentName = studentInfoLine.substring(valueStart, j);
+                            break;
+                        case 2:
+                            studentRole = studentInfoLine.substring(valueStart, j);
+                            break;
+                        case 3:
+                            studentAtt = Double.parseDouble(studentInfoLine.substring(valueStart, j));
+                            break;
+                        case 4:
+                            groupID = Integer.parseInt(studentInfoLine.substring(valueStart, j));
+                            break;
+                    }
+                    valueStart = j + 1;
+                    value += 1;
+                }
+            }
+            System.out.println("ID: " + studentID + ", Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
+            createStudent(studentID, studentName, studentRole, studentAtt, groupID);
+        }
+        cl.sortStudentsByAttendance();
+        updateGroupLists();
     }
 
     private void saveStudentsToDB(ArrayList<Student> studentList) {
@@ -525,44 +576,6 @@ public class GroupSorter {
         }
     }
 
-    private void analyseData(ArrayList<String> studentInfo) {
-        int studentID = 0;
-        String studentName = "";
-        String studentRole = "";
-        double studentAtt = 0;
-        int groupID = 0;
-        for (int i = 0; i < studentInfo.size(); i++) {
-            int value = 0;
-            int valueStart = 0;
-            String studentInfoLine = studentInfo.get(i);
-            for (int j = 0; j < studentInfoLine.length(); j++) {
-                if (",".equals(studentInfoLine.substring(j, j + 1))) {
-                    switch (value) {
-                        case 0:
-                            studentID = Integer.parseInt(studentInfoLine.substring(valueStart, j));
-                            break;
-                        case 1:
-                            studentName = studentInfoLine.substring(valueStart, j);
-                            break;
-                        case 2:
-                            studentRole = studentInfoLine.substring(valueStart, j);
-                            break;
-                        case 3:
-                            studentAtt = Double.parseDouble(studentInfoLine.substring(valueStart, j));
-                            break;
-                        case 4:
-                            groupID = Integer.parseInt(studentInfoLine.substring(valueStart, j));
-                            break;
-                    }
-                    valueStart = j + 1;
-                    value += 1;
-                }
-            }
-            System.out.println("ID: " + studentID + ", Name: " + studentName + ", Role: " + studentRole + ", Attendance: " + studentAtt);
-            createStudent(studentID, studentName, studentRole, studentAtt, groupID);
-        }
-        cl.sortStudentsByAttendance();
-    }
 
     private void createStudent(int id, String name, String role, double attendance, int groupID) {
         Student s = new Student(id, name, role, attendance, groupID);
