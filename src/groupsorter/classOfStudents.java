@@ -8,6 +8,8 @@ package groupsorter;
 import java.util.ArrayList;
 
 /**
+ * A class that holds a list of students that can be sorted into a list of
+ * groups
  *
  * @author niall
  */
@@ -19,16 +21,32 @@ public class classOfStudents {
     private ArrayList<Group> groupList;
     private ArrayList<Student> studentList;
 
+    /**
+     *
+     * @param l The name of the lecturer assigned to the class
+     */
     public classOfStudents(String l) {
         lecturerName = l;
         groupList = new ArrayList<>();
         studentList = new ArrayList<>();
     }
 
+    /**
+     * Returns the amount of students per group set for a certain class of
+     * students
+     *
+     * @return Students per group
+     */
     public int getStudentsPerGroup() {
         return studentsPerGroup;
     }
 
+    /**
+     * Sets the amount of students per group to a given values for a certain
+     * class of students
+     *
+     * @param sPg Students per group
+     */
     public void setStudentsPerGroup(int sPg) {
         double numberOfStudents = getStudentListSize();
         double studentsPerGroup = sPg;
@@ -40,45 +58,90 @@ public class classOfStudents {
         System.out.println("NUMBER OF GROUPS NEEDED " + getNumOfGroups());
     }
 
+    /**
+     * Returns the numer of groups in a class of students
+     *
+     * @return the number of groups in a class of students
+     */
     int getNumOfGroups() {
         return numOfGroups;
     }
 
+    /**
+     * Sets the number of groups in a class of students to a given value
+     *
+     * @param n Number of groups
+     */
     void setNumOfGroups(int n) {
         //System.out.println("num of groups: " + n);
         numOfGroups = n;
         createGroups(n);
     }
 
+    /**
+     * Returns the name of the class' lecturer
+     *
+     * @return the name of the class' lecturer
+     */
     String getLecturerName() {
         return lecturerName;
     }
 
+    /**
+     * Sets the name of the lecturer to a given value
+     *
+     * @param n The name of the new lecturer
+     */
     void setLecturerName(String n) {
         lecturerName = n;
     }
 
+    /**
+     * Returns the number of students in the class
+     *
+     * @return the number of students in the class
+     */
     int getStudentListSize() {
         return studentList.size();
     }
 
+    /**
+     * Returns the number of groups in the class
+     *
+     * @return the number of groups in the class
+     */
     int getGroupListSize() {
         return groupList.size();
     }
 
+    /**
+     * Returns the list of students for the class
+     *
+     * @return the list of students for the class
+     */
     ArrayList<Student> getStudentList() {
         return studentList;
     }
 
+    /**
+     * Returns the list of groups for the class
+     *
+     * @return the list of groups for the class
+     */
     ArrayList<Group> getGroupList() {
         return groupList;
     }
 
+    /**
+     * Adds a given student to the list of students for the class
+     *
+     * @param s Student to be added to the class
+     */
     void addStudent(Student s) {
         studentList.add(s);
         if (s.getGroupID() != -1) { //if the student has a group
             if (getGroupByID(s.getGroupID()) != null) { //if that group is already created
-                
+
             } else { //if the group doesn't exist
                 groupList.add(new Group(s.getGroupID())); //creates the group
                 numOfGroups++;
@@ -87,10 +150,20 @@ public class classOfStudents {
         }
     }
 
+    /**
+     * Removes a given student from the class
+     *
+     * @param s Student to be removed from the class
+     */
     void removeStudent(Student s) {
         studentList.remove(s);
     }
 
+    /**
+     * Creates a given number of groups
+     *
+     * @param n Number of groups to be created
+     */
     void createGroups(int n) {
         numOfGroups = n;
         clearGroups();
@@ -99,19 +172,31 @@ public class classOfStudents {
         }
     }
 
+    /**
+     * Clears all of the groups in the class
+     */
     void clearGroups() {
         for (int i = groupList.size() - 1; i >= 0; i--) {
             groupList.get(i).clearStudents();
             groupList.remove(i);
         }
     }
-    
+
+    /**
+     * Clears all of the students in the class
+     */
     void clearStudents() {
         for (int i = studentList.size() - 1; i >= 0; i--) {
             studentList.remove(i);
         }
     }
-    
+
+    /**
+     * Adds a given student to a given group
+     *
+     * @param s The student to be added to the given group
+     * @param g The group that the given student will be added to
+     */
     void addStudentToGroup(Student s, Group g) {
         //System.out.println(s.getName() + " was added to group " + g.getGroupName());
         g.addStudent(s);
@@ -119,6 +204,12 @@ public class classOfStudents {
         s.setGroupID(g.getGroupID());
     }
 
+    /**
+     * Removes a given student from a given group
+     *
+     * @param s The student to be removed from the given group
+     * @param g The group that the given student will be removed from
+     */
     void removeStudentFromGroup(Student s, Group g) {
         if (g.getStudentList().contains(s)) {
             g.removeStudent(s);
@@ -127,6 +218,10 @@ public class classOfStudents {
         }
     }
 
+    /**
+     * Sorts the list of students in the class into different groups according
+     * to preferred roles and attendance
+     */
     void sortStudentsIntoGroups() {
         boolean noGroupNeeds; //if no group needs what role the student has
         double studentNum = getStudentListSize();
@@ -156,12 +251,23 @@ public class classOfStudents {
             }
         }
     }
-    
+
+    /**
+     * Creates a group with a given id
+     *
+     * @param id The unique identifier of the group
+     */
     private void createGroup(int id) {
         Group newGroup = new Group(id);
         groupList.add(newGroup);
     }
-    
+
+    /**
+     * Returns the group that is associated with a given identifier
+     *
+     * @return The group that is associated with a given identifier
+     * @param id The unique identifier of the group
+     */
     private Group getGroupByID(int id) {
         Group g = null;
         for (int i = 0; i < groupList.size(); i++) {
@@ -172,6 +278,16 @@ public class classOfStudents {
         return g;
     }
 
+    /**
+     * Returns true if the given student can be placed into a given group
+     *
+     * @return if the given student can be placed into a given group
+     * @param s The student being added to a group
+     * @param g The group the student is being added to
+     * @param maxGroupSize The maximum number of students per group
+     * @param noGroupNeeds Whether or no other group needs this student and
+     * their role
+     */
     boolean canStudentGoToGroup(Student s, Group g, double maxGroupSize, boolean noGroupNeeds) {
         if (noGroupNeeds) //if no group needs the student
         {
@@ -181,6 +297,11 @@ public class classOfStudents {
         }
     }
 
+    /**
+     * Returns an array containing the names of the students in the class
+     *
+     * @return an array of all the student names in the class
+     */
     String[] getNamesArray() {
         String[] studentNames = new String[getStudentList().size()];
         for (int i = 0; i < getStudentList().size(); i++) {
@@ -189,6 +310,11 @@ public class classOfStudents {
         return studentNames;
     }
 
+    /**
+     * Returns an array containing the information of the students in the class
+     *
+     * @return an array of all the student information in the class
+     */
     String[] getNamesForList() {
         int studentsWithoutGroups = 0;
         for (int i = 0; i < getStudentList().size(); i++) {
@@ -208,6 +334,11 @@ public class classOfStudents {
         return studentNames;
     }
 
+    /**
+     * Returns a student that corresponds to a given identifier
+     *
+     * @return a student that matches a given identifier
+     */
     Student getStudentByID(int id) {
         for (int i = 0; i < studentList.size(); i++) {
             if (studentList.get(i).getStudentID() == id) {
@@ -217,18 +348,10 @@ public class classOfStudents {
         return null;
     }
 
-    void printGroupInfo() {
-        for (int i = 0; i < getGroupListSize(); i++) {
-            Group group = getGroupList().get(i);
-            System.out.println("Group " + group.getGroupID());
-            for (int j = 0; j < group.getStudentListSize(); j++) {
-                Student s = group.getStudentList().get(j);
-                System.out.println(s.getStudentID() + " " + s.getName() + ": " + s.getPrefRole() + ", " + s.getAttendance());
-            }
-            System.out.println();
-        }
-    }
-
+    /**
+     * Sorts the list of students into descending order by attendance, so that
+     * the highest attending students are at the front of the list
+     */
     void sortStudentsByAttendance() {
         boolean swap; //creates the swap variable
         do {
@@ -248,5 +371,4 @@ public class classOfStudents {
             System.out.println(studentList.get(i).getAttendance());
         }
     }
-
 }
