@@ -24,7 +24,7 @@ public class DataReader {
         ArrayList<Student> studentList = new ArrayList<>();
         ResultSet rs = getTable("Students");
         while (rs.next()) {
-            Student newStudent = new Student(rs.getInt("studentID"), rs.getString("studentName"), rs.getString("prefRole"), rs.getDouble("attendance")); //creates a new student with the attributes of that in the table
+            Student newStudent = new Student(rs.getInt("studentID"), rs.getString("studentName"), rs.getString("prefRole"), rs.getDouble("attendance"), rs.getInt("groupID")); //creates a new student with the attributes of that in the table
             //System.out.println(newStudent.getStudentID());
             studentList.add(newStudent);
         }

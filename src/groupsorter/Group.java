@@ -13,24 +13,23 @@ import java.util.ArrayList;
  */
 public class Group {
     private Student leader;
-    private String groupName;
     private int groupID;
     private ArrayList<Student> studentList;
-    public Group(String n) {
-        groupName = n;
+    public Group(int n) {
+        groupID = n;
         studentList = new ArrayList<>();
-    }
-    
-    void setGroupName(String n) {
-        groupName = n;
-    }
-    
-    String getGroupName() {
-        return groupName;
     }
     
     ArrayList<Student> getStudentList() {
         return studentList;
+    }
+    
+    void setGroupID(int id) {
+        groupID = id;
+    }
+    
+    int getGroupID() {
+        return groupID;
     }
     
     int getStudentListSize() {
