@@ -652,7 +652,7 @@ public class GroupSorter {
      *
      * @param fileToBeRead The text file that will be read
      */
-    private void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
+    public void readStudentsFromCSV(File fileToBeRead) { //file given is txt where data is read seperated by commas
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileToBeRead));
             ArrayList<String> studentInfo = new ArrayList<>();
@@ -805,7 +805,7 @@ public class GroupSorter {
      *
      * @param n Number of students per group
      */
-    private void setNumOfStudentsPerGroup(int n) {
+    public void setNumOfStudentsPerGroup(int n) {
         cl.setStudentsPerGroup(n);
     }
 
